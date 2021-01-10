@@ -189,7 +189,7 @@ class PyErg(object):
     def _checkvalue(*args, **kwargs):
         return checkvalue(*args, **kwargs)
 
-    def get_monitor(self, forceplot=False, pretty=False):
+    def get_monitor(self, forceplot=False, pretty=False, strokestats=False):
         """
         Returns values from the monitor that relate to the current workout,
         optionally returns force plot data and stroke state. (* required)
@@ -212,6 +212,8 @@ class PyErg(object):
 
         if forceplot:
             command.extend(['CSAFE_PM_GET_FORCEPLOTDATA', 32, 'CSAFE_PM_GET_STROKESTATE'])
+        if strokestats:
+            command.extend(['CSAFE_PM_GET_STROKESTATS', 0])
         results = self.send(command)
 
         monitor = {}
@@ -237,6 +239,10 @@ class PyErg(object):
             datapoints = results['CSAFE_PM_GET_FORCEPLOTDATA'][0] // 2
             monitor['forceplot'] = results['CSAFE_PM_GET_FORCEPLOTDATA'][1:(datapoints+1)]
             monitor['strokestate'] = results['CSAFE_PM_GET_STROKESTATE'][0]
+
+        if strokestats:
+            # TODO: split into parts
+            monitor['strokestats'] = results['CSAFE_PM_GET_STROKESTATS']
 
         monitor['status'] = results['CSAFE_GETSTATUS_CMD'][0] & 0xF
 
