@@ -183,6 +183,8 @@ class PyErg(object):
 
         self.__lastsend = datetime.datetime.now()
 
+        self.timeout = 2000
+
     @staticmethod
     def _checkvalue(*args, **kwargs):
         return checkvalue(*args, **kwargs)
@@ -426,7 +428,7 @@ class PyErg(object):
         csafe = csafe_cmd.write(message)
         #sends message to erg and records length of message
         try:
-            length = self.erg.write(self.outEndpoint, csafe, timeout=2000)
+            length = self.erg.write(self.outEndpoint, csafe, timeout=self.timeout)
         # Checks for USBError 16: Resource busy
         except USBError as e:
             if e.errno != 19:
@@ -438,7 +440,7 @@ class PyErg(object):
         while not response:
             try:
                 #recieves byte array from erg
-                transmission = self.erg.read(self.inEndpoint, length, timeout=2000)
+                transmission = self.erg.read(self.inEndpoint, length, timeout=self.timeout)
                 response = csafe_cmd.read(transmission)
             except Exception as e:
                 raise e
