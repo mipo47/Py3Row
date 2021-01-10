@@ -241,8 +241,21 @@ class PyErg(object):
             monitor['strokestate'] = results['CSAFE_PM_GET_STROKESTATE'][0]
 
         if strokestats:
-            # TODO: split into parts
-            monitor['strokestats'] = results['CSAFE_PM_GET_STROKESTATS']
+            stats = results['CSAFE_PM_GET_STROKESTATS']
+            stroke_stats = [
+                'stroke_distance',
+                'stroke_drive_time',
+                'stroke_recovery_time',
+                'stroke_length',
+                'stroke_count',
+                'stroke_peak_force',
+                'stroke_impulse_force',
+                'stroke_average_force',
+                'stroke_work'
+            ]
+            for i, stroke_stat in enumerate(stroke_stats):
+                multiplier = 1 if stroke_stat == 'stroke_count' else 0.01
+                monitor[stroke_stat] = stats[i] * multiplier
 
         monitor['status'] = results['CSAFE_GETSTATUS_CMD'][0] & 0xF
 
