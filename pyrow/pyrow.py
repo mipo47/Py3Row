@@ -184,6 +184,7 @@ class PyErg(object):
         self.__lastsend = datetime.datetime.now()
 
         self.timeout = 2000
+        self.force_frequency = 32
 
     @staticmethod
     def _checkvalue(*args, **kwargs):
@@ -211,7 +212,7 @@ class PyErg(object):
                    'CSAFE_GETPOWER_CMD', 'CSAFE_GETCALORIES_CMD', 'CSAFE_GETHRCUR_CMD']
 
         if forceplot:
-            command.extend(['CSAFE_PM_GET_FORCEPLOTDATA', 32, 'CSAFE_PM_GET_STROKESTATE'])
+            command.extend(['CSAFE_PM_GET_FORCEPLOTDATA', self.force_frequency, 'CSAFE_PM_GET_STROKESTATE'])
         if strokestats:
             command.extend(['CSAFE_PM_GET_STROKESTATS', 0])
         results = self.send(command)
